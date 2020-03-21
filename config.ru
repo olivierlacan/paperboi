@@ -27,6 +27,7 @@ def payload
   <html>
   <head>
     <title>Paperboi</title>
+    <meta charset="UTF-8">
   </head>
   <body>
     <h1>Paperboi</h1>
