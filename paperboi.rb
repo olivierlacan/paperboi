@@ -5,6 +5,17 @@ class Paperboi
   def self.news(query, state)
     request_query = build_request(query, state)
 
+    cache_key = "#{Digest::SHA1.base64digest(request_query.to_json)}"
+
+    stored_response = check_cache(cache_key)
+
+    if stored_response
+      stored_response
+    else
+      write_cache(cache_key, api.get_everything(**request_query))
+    end
+  end
+
   def self.build_request(query, state)
     {
       qInTitle: "#{query} AND #{state}",
@@ -24,12 +35,55 @@ class Paperboi
   def self.to_date
     Date.today.iso8601
   end
+
+  def self.check_cache(key)
+    payload = cache.get(key)
+
+    if payload
+      puts "cache hit for #{key}"
+      JSON.parse(payload)
+    else
+      puts "cache miss for #{key}"
+    end
+  end
+
+  def self.write_cache(key, value)
+    puts "cache write for #{key}"
+    payload = serialize(value)
+    puts "caching serialized payload: #{payload.inspect}"
+
+    cache.multi do
+      cache.set(key, payload)
+      cache.get(key)
+    end
+  end
+
+  def self.serialize(value)
+    value.map do
+      {
+        title: _1.title,
+        content: _1.content,
+        published_at: _1.publishedAt,
+        url: _1.url,
+        description: _1.description
+      }
+    end.to_json
+  end
+
   def self.production?
     ENV["RACK_ENV"] == "production"
   end
 
   def self.development?
     !production?
+  end
+
+  def self.cache
+    @redis ||= if production?
+      Redis.new(url: ENV["REDIS_URL"])
+    else
+      Redis.new
+    end
   end
 end
 

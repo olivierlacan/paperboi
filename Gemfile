@@ -8,6 +8,7 @@ ruby "2.7.0"
 
 gem "news-api"
 gem "rack"
+gem "redis"
 
 group :development do
   gem "dotenv"
