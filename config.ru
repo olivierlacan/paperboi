@@ -6,7 +6,7 @@ Bundler.setup
 require 'dotenv'
 Dotenv.load
 
-require "./lib/paperboi"
+require "./paperboi"
 
 run lambda { |env|
   [
