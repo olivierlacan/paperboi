@@ -1,5 +1,6 @@
 # paperboi
 
+![Lewis Wickes Hine for the National Child Labor Commission, 1915](https://p198.p4.n0.cdn.getcloudapp.com/items/5zuyb5LQ/esYSqmj.jpg?v=431b9e6e63c191f99f1ca55f5f7a42f7)
 > always 'bout that paper, boy
 
 Using NewsAPI, paperboi fetches very specific COVID-19 related news article and
