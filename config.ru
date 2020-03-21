@@ -14,5 +14,31 @@ run lambda { |env|
   [
     200,
     {'Content-Type'=>'text/html'},
-    StringIO.new(Paperboi.news)]
+    formatted_payload
+    ]
 }
+
+def payload
+  query = 'covid AND death'
+  results = Paperboi.news(query)
+
+  <<~HTML
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Paperboi</title>
+  </head>
+  <body>
+    <h1>Paperboi</h1>
+    <p>Returning you all health-related news articles matching #{query}</p>
+    <ul>
+      #{results}
+    </ul>
+  </body>
+  </html>
+  HTML
+end
+
+def formatted_payload
+  StringIO.new(payload)
+end
