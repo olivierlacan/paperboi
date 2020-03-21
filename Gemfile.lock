@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    dotenv (2.7.5)
+    news-api (0.2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dotenv
+  news-api
+
+BUNDLED WITH
+   2.1.4
