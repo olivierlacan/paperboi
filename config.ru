@@ -3,8 +3,10 @@ require 'bundler'
 
 Bundler.setup
 
-require 'dotenv'
-Dotenv.load
+if !ENV["RACK_ENV"] == "production"
+  require 'dotenv'
+  Dotenv.load
+end
 
 require "./paperboi"
 
