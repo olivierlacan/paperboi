@@ -3,6 +3,7 @@ require 'bundler'
 
 Bundler.require
 
+require 'date'
 require "./paperboi"
 
 if Paperboi.development?
@@ -60,7 +61,7 @@ def items(query, state)
   Paperboi.news(query, state).collect do
     <<~HTML
       <li>
-        <a href='#{_1["url"]}'>#{_1["title"]}</a> #{_1["published_at"]}
+        <a href='#{_1["url"]}'>#{_1["title"]}</a> #{t(_1["published_at"])}
       </li>
     HTML
   end.join("\n")
@@ -73,6 +74,10 @@ rescue TooManyRequestsException => error
       NewsAPI rate limit reached.
     </li>
   HTML
+end
+
+def t(datetime)
+  DateTime.parse(datetime).new_offset('-0500').strftime("%-m/%-d %k:%M")
 end
 
 def formatted_payload
