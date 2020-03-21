@@ -3,12 +3,12 @@ require 'bundler'
 
 Bundler.require
 
-if ENV["RACK_ENV"] != "production"
+require "./paperboi"
+
+if Paperboi.development?
   require 'dotenv'
   Dotenv.load
 end
-
-require "./paperboi"
 
 run lambda { |env|
   [

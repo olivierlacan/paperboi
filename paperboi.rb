@@ -13,5 +13,12 @@ class Paperboi
   def self.api
     @newsapi ||= News.new(ENV["NEWS_API_KEY"])
   end
+  def self.production?
+    ENV["RACK_ENV"] == "production"
+  end
+
+  def self.development?
+    !production?
+  end
 end
 
