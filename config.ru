@@ -64,6 +64,15 @@ def items(query, state)
       </li>
     HTML
   end.join("\n")
+
+rescue TooManyRequestsException => error
+  puts error.message
+
+  <<~HTML
+    <li>
+      NewsAPI rate limit reached.
+    </li>
+  HTML
 end
 
 def formatted_payload
