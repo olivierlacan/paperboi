@@ -57,7 +57,7 @@ def results_for_all_states(query)
 end
 
 def items(query, state)
-  items = Paperboi.news(query, state).collect do
+  Paperboi.news(query, state).collect do
     <<~HTML
       <li>
         <a href='#{_1["url"]}'>#{_1["title"]}</a> #{_1["published_at"]}
