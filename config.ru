@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler'
 
-Bundler.setup
+Bundler.require
 
 if ENV["RACK_ENV"] != "production"
   require 'dotenv'
