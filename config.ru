@@ -58,7 +58,11 @@ def results_for_all_states(query)
 end
 
 def items(query, state)
-  Paperboi.news(query, state).collect do
+  articles = Paperboi.news(query, state)
+
+  return "<li>No results</li>" if articles.empty?
+
+  articles.collect do
     <<~HTML
       <li>
         <a href='#{_1["url"]}'>#{_1["title"]}</a> #{t(_1["published_at"])}
