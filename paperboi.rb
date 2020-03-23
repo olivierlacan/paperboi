@@ -12,7 +12,15 @@ class Paperboi
     if stored_response
       stored_response
     else
-      write_cache(cache_key, api.get_everything(**request_query))
+      api_response = api.get_everything(**request_query)
+
+      if api_response.empty?
+        puts "No results for #{request_query.inspect}"
+      else
+        puts "Results found for #{request_query.inspect}"
+      end
+
+      write_cache(cache_key, api_response)
     end
   end
 
