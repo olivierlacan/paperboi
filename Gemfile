@@ -9,6 +9,7 @@ ruby "2.7.0"
 gem "news-api"
 gem "rack"
 gem "redis"
+gem "bugsnag", "~> 6.13"
 
 group :development do
   gem "dotenv"

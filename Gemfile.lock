@@ -1,6 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    bugsnag (6.13.0)
+      concurrent-ruby (~> 1.0)
+    concurrent-ruby (1.1.6)
     dotenv (2.7.5)
     ffi (1.12.2)
     listen (3.2.1)
@@ -19,6 +22,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bugsnag (~> 6.13)
   dotenv
   news-api
   rack

@@ -9,6 +9,12 @@ require "./paperboi"
 if Paperboi.development?
   require 'dotenv'
   Dotenv.load
+else
+  Bugsnag.configure do |config|
+    config.api_key = ENV["BUGSNAG_API_KEY"]
+  end
+
+  use Bugsnag::Rack
 end
 
 run lambda { |env|
