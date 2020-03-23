@@ -21,6 +21,8 @@ class Paperboi
       end
 
       write_cache(cache_key, api_response)
+
+      check_cache(cache_key)
     end
   end
 
