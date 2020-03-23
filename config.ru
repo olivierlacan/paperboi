@@ -26,7 +26,7 @@ run lambda { |env|
 }
 
 def payload
-  query = '(covid OR coronavirus OR covid-19) AND (death OR positive OR confirmed)'
+  query = '(covid OR coronavirus OR covid-19) AND (death OR positive OR negative OR confirmed OR hospitalized)'
 
   <<~HTML
   <!DOCTYPE html>
