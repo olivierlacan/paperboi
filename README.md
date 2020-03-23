@@ -24,10 +24,12 @@ NewsAPI queries are scoped a 3-day window starting today and going back 3 days.
 ## Installation
 
 - `bundle install`
+- `cp .env.example .env`
+- Get a newsapi.org API key and replace the value for NEWS_API_KEY with it.
 
 ## Development
 
-- `bundle rerun`
+- `bundle exec rerun`
 
 Don't worry about deprecation warnings, this is an old library but it does the trick.
 
