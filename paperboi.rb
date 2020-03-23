@@ -24,6 +24,8 @@ class Paperboi
 
       check_cache(cache_key)
     end
+  rescue UnauthorizedException => error
+    raise "#{error}: missing NEWS_API_KEY environment variable"
   end
 
   def self.build_request(query, state)
