@@ -19,7 +19,7 @@ end
 
 app = Hanami::Router.new do
   get "/", to: ->(env) { [200, {"Content-Type"=>"text/html"}, StringIO.new(Paperboi.search)] }
-  get "/prison", to: ->(env) { [200, {"Content-Type"=>"text/html"}, StringIO.new(Paperboi.search)] }
+  get "/prison", to: ->(env) { [200, {"Content-Type"=>"text/html"}, StringIO.new(Paperboi.prison)] }
 end
 
 run app

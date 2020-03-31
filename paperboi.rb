@@ -1,17 +1,29 @@
-require 'news-api'
-require 'date'
+require "news-api"
+require "date"
 
 class Paperboi
   def self.search
     result_template(
-      search_query,
+      news_query,
       Date.today.prev_day(3).iso8601,
       Date.today.iso8601
     )
   end
 
-  def self.search_query
-    '(covid OR coronavirus OR covid-19) AND (death OR positive OR negative OR confirmed OR hospitalized OR pending)'
+  def self.prison
+    result_template(
+      prison_query,
+      Date.today.prev_day(7).iso8601,
+      Date.today.iso8601
+    )
+  end
+
+  def self.news_query
+    "(covid OR coronavirus OR covid-19) AND (death OR positive OR negative OR confirmed OR hospitalized OR pending)"
+  end
+
+  def self.prison_query
+    "prison AND (covid OR coronavirus OR covid-19)"
   end
 
   def self.result_template(query, from_date, to_date)
@@ -25,7 +37,7 @@ class Paperboi
     <body>
       <h1>paperboi</h1>
       <p>
-        Returning all news articles matching <strong>#{search_query}</strong> for all
+        Returning all news articles matching <strong>#{query}</strong> for all
         states sorted by relevancy and limited to one per state between
         #{from_date} and #{to_date}.
       </p>
@@ -58,7 +70,7 @@ class Paperboi
     articles.collect do
       <<~HTML
         <li>
-          <a href='#{_1["url"]}'>#{_1["title"]}</a> #{t(_1["published_at"])}
+          <a href="#{_1["url"]}">#{_1["title"]}</a> #{t(_1["published_at"])}
         </li>
       HTML
     end.join("\n")
@@ -74,66 +86,66 @@ class Paperboi
   end
 
   def self.t(datetime)
-    DateTime.parse(datetime).new_offset('-0500').strftime("%-m/%-d %k:%M")
+    DateTime.parse(datetime).new_offset("-0500").strftime("%-m/%-d %k:%M")
   end
 
   def self.states
     [
-      ["AK", "Alaska"],
-      ["AL", "Alabama"],
-      ["AR", "Arkansas"],
-      ["AS", "American Samoa"],
-      ["AZ", "Arizona"],
+      # ["AK", "Alaska"],
+      # ["AL", "Alabama"],
+      # ["AR", "Arkansas"],
+      # ["AS", "American Samoa"],
+      # ["AZ", "Arizona"],
       ["CA", "California"],
       ["CO", "Colorado"],
-      ["CT", "Connecticut"],
-      ["DC", "District of Columbia"],
-      ["DE", "Delaware"],
+      # ["CT", "Connecticut"],
+      # ["DC", "District of Columbia"],
+      # ["DE", "Delaware"],
       ["FL", "Florida"],
-      ["GA", "Georgia"],
-      ["GU", "Guam"],
-      ["HI", "Hawaii"],
-      ["IA", "Iowa"],
-      ["ID", "Idaho"],
-      ["IL", "Illinois"],
-      ["IN", "Indiana"],
-      ["KS", "Kansas"],
-      ["KY", "Kentucky"],
-      ["LA", "Louisiana"],
-      ["MA", "Massachusetts"],
-      ["MD", "Maryland"],
-      ["ME", "Maine"],
-      ["MI", "Michigan"],
-      ["MN", "Minnesota"],
-      ["MO", "Missouri"],
-      ["MS", "Mississippi"],
-      ["MT", "Montana"],
-      ["NC", "North Carolina"],
-      ["ND", "North Dakota"],
-      ["NE", "Nebraska"],
-      ["NH", "New Hampshire"],
-      ["NJ", "New Jersey"],
-      ["NM", "New Mexico"],
-      ["NV", "Nevada"],
+      # ["GA", "Georgia"],
+      # ["GU", "Guam"],
+      # ["HI", "Hawaii"],
+      # ["IA", "Iowa"],
+      # ["ID", "Idaho"],
+      # ["IL", "Illinois"],
+      # ["IN", "Indiana"],
+      # ["KS", "Kansas"],
+      # ["KY", "Kentucky"],
+      # ["LA", "Louisiana"],
+      # ["MA", "Massachusetts"],
+      # ["MD", "Maryland"],
+      # ["ME", "Maine"],
+      # ["MI", "Michigan"],
+      # ["MN", "Minnesota"],
+      # ["MO", "Missouri"],
+      # ["MS", "Mississippi"],
+      # ["MT", "Montana"],
+      # ["NC", "North Carolina"],
+      # ["ND", "North Dakota"],
+      # ["NE", "Nebraska"],
+      # ["NH", "New Hampshire"],
+      # ["NJ", "New Jersey"],
+      # ["NM", "New Mexico"],
+      # ["NV", "Nevada"],
       ["NY", "New York"],
-      ["OH", "Ohio"],
-      ["OK", "Oklahoma"],
-      ["OR", "Oregon"],
-      ["PA", "Pennsylvania"],
-      ["PR", "Puerto Rico"],
-      ["RI", "Rhode Island"],
-      ["SC", "South Carolina"],
-      ["SD", "South Dakota"],
-      ["TN", "Tennessee"],
+      # ["OH", "Ohio"],
+      # ["OK", "Oklahoma"],
+      # ["OR", "Oregon"],
+      # ["PA", "Pennsylvania"],
+      # ["PR", "Puerto Rico"],
+      # ["RI", "Rhode Island"],
+      # ["SC", "South Carolina"],
+      # ["SD", "South Dakota"],
+      # ["TN", "Tennessee"],
       ["TX", "Texas"],
-      ["UT", "Utah"],
-      ["VA", "Virginia"],
-      ["VI", "Virgin Islands"],
-      ["VT", "Vermont"],
-      ["WA", "Washington"],
-      ["WI", "Wisconsin"],
-      ["WV", "West Virginia"],
-      ["WY", "Wyoming"]
+      # ["UT", "Utah"],
+      # ["VA", "Virginia"],
+      # ["VI", "Virgin Islands"],
+      # ["VT", "Vermont"],
+      ["WA", "Washington"]
+      # ["WI", "Wisconsin"],
+      # ["WV", "West Virginia"],
+      # ["WY", "Wyoming"]
     ]
   end
 
@@ -165,9 +177,9 @@ class Paperboi
 
   def self.build_request(query, state, from_date, to_date)
     {
-      qInTitle: "#{query} AND #{state}",
+      qInTitle: "#{state} AND #{query}",
       from: from_date, to: to_date,
-      language: 'en', sortBy: 'relevancy', pageSize: 1
+      language: "en", sortBy: "relevancy", pageSize: 1
     }
   end
 
