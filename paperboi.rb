@@ -2,8 +2,143 @@ require 'news-api'
 require 'date'
 
 class Paperboi
-  def self.news(query, state)
-    request_query = build_request(query, state)
+  def self.search
+    result_template(
+      search_query,
+      Date.today.prev_day(3).iso8601,
+      Date.today.iso8601
+    )
+  end
+
+  def self.search_query
+    '(covid OR coronavirus OR covid-19) AND (death OR positive OR negative OR confirmed OR hospitalized OR pending)'
+  end
+
+  def self.result_template(query, from_date, to_date)
+    <<~HTML
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>paperboi</title>
+    </head>
+    <body>
+      <h1>paperboi</h1>
+      <p>
+        Returning all news articles matching <strong>#{search_query}</strong> for all
+        states sorted by relevancy and limited to one per state between
+        #{from_date} and #{to_date}.
+      </p>
+      <ul>
+        #{results_for_all_states(query, from_date, to_date)}
+      </ul>
+    </body>
+    </html>
+    HTML
+  end
+
+  def self.results_for_all_states(query, from_date, to_date)
+    states.map do |abbreviation, state|
+      <<~HTML
+        <ul>
+          <li>#{state}</li>
+          <ul>
+            #{items(query, state, from_date, to_date)}
+          </ul>
+        </ul>
+      HTML
+    end.join("\n")
+  end
+
+  def self.items(query, state, from_date, to_date)
+    articles = Paperboi.news(query, state, from_date, to_date)
+
+    return "<li>No results</li>" if articles.empty?
+
+    articles.collect do
+      <<~HTML
+        <li>
+          <a href='#{_1["url"]}'>#{_1["title"]}</a> #{t(_1["published_at"])}
+        </li>
+      HTML
+    end.join("\n")
+
+  rescue TooManyRequestsException => error
+    puts error.message
+
+    <<~HTML
+      <li>
+        NewsAPI rate limit reached.
+      </li>
+    HTML
+  end
+
+  def self.t(datetime)
+    DateTime.parse(datetime).new_offset('-0500').strftime("%-m/%-d %k:%M")
+  end
+
+  def self.states
+    [
+      ["AK", "Alaska"],
+      ["AL", "Alabama"],
+      ["AR", "Arkansas"],
+      ["AS", "American Samoa"],
+      ["AZ", "Arizona"],
+      ["CA", "California"],
+      ["CO", "Colorado"],
+      ["CT", "Connecticut"],
+      ["DC", "District of Columbia"],
+      ["DE", "Delaware"],
+      ["FL", "Florida"],
+      ["GA", "Georgia"],
+      ["GU", "Guam"],
+      ["HI", "Hawaii"],
+      ["IA", "Iowa"],
+      ["ID", "Idaho"],
+      ["IL", "Illinois"],
+      ["IN", "Indiana"],
+      ["KS", "Kansas"],
+      ["KY", "Kentucky"],
+      ["LA", "Louisiana"],
+      ["MA", "Massachusetts"],
+      ["MD", "Maryland"],
+      ["ME", "Maine"],
+      ["MI", "Michigan"],
+      ["MN", "Minnesota"],
+      ["MO", "Missouri"],
+      ["MS", "Mississippi"],
+      ["MT", "Montana"],
+      ["NC", "North Carolina"],
+      ["ND", "North Dakota"],
+      ["NE", "Nebraska"],
+      ["NH", "New Hampshire"],
+      ["NJ", "New Jersey"],
+      ["NM", "New Mexico"],
+      ["NV", "Nevada"],
+      ["NY", "New York"],
+      ["OH", "Ohio"],
+      ["OK", "Oklahoma"],
+      ["OR", "Oregon"],
+      ["PA", "Pennsylvania"],
+      ["PR", "Puerto Rico"],
+      ["RI", "Rhode Island"],
+      ["SC", "South Carolina"],
+      ["SD", "South Dakota"],
+      ["TN", "Tennessee"],
+      ["TX", "Texas"],
+      ["UT", "Utah"],
+      ["VA", "Virginia"],
+      ["VI", "Virgin Islands"],
+      ["VT", "Vermont"],
+      ["WA", "Washington"],
+      ["WI", "Wisconsin"],
+      ["WV", "West Virginia"],
+      ["WY", "Wyoming"]
+    ]
+  end
+
+  def self.news(query, state, from_date, to_date)
+    request_query = build_request(query, state, from_date, to_date)
 
     cache_key = "#{Digest::SHA1.base64digest(request_query.to_json)}"
 
@@ -28,7 +163,7 @@ class Paperboi
     raise "#{error}: missing NEWS_API_KEY environment variable"
   end
 
-  def self.build_request(query, state)
+  def self.build_request(query, state, from_date, to_date)
     {
       qInTitle: "#{query} AND #{state}",
       from: from_date, to: to_date,
@@ -38,14 +173,6 @@ class Paperboi
 
   def self.api
     @newsapi ||= News.new(ENV["NEWS_API_KEY"])
-  end
-
-  def self.from_date
-    Date.today.prev_day(3).iso8601
-  end
-
-  def self.to_date
-    Date.today.iso8601
   end
 
   def self.check_cache(key)

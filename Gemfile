@@ -10,6 +10,7 @@ gem "news-api"
 gem "rack"
 gem "redis"
 gem "bugsnag", "~> 6.13"
+gem "hanami-router"
 
 group :development do
   gem "dotenv"
